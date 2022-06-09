@@ -31,7 +31,7 @@ data "aws_iam_policy_document" "notify_policy" {
     ]
 
     resources = [
-      "${aws_sns_topic.sns_topic.arn}",
+      aws_sns_topic.sns_topic.arn
     ]
 
     principals {

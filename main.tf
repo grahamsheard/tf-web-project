@@ -312,3 +312,34 @@ resource "aws_secretsmanager_secret" "this" {
     Name = "${local.name}-rds-password"
   }
 }
+
+###  CloudWatch ALB alarm ###
+
+resource "aws_cloudwatch_metric_alarm" "Test_Alarm" {
+  alarm_name          = "ALB_Alarm"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "RequestCount"
+  namespace           = "AWS/ApplicationELB"
+  period              = "60"
+  statistic           = "Sum"
+  threshold           = "5"
+  alarm_description   = "Test_Alarm_ALB"
+  treat_missing_data  = "notBreaching"
+  alarm_actions       = ["${aws_sns_topic.sns_topic.arn}"]
+  ok_actions          = ["${aws_sns_topic.sns_topic.arn}"]
+  dimensions = {
+    LoadBalancer = aws_alb.this.arn_suffix
+  }
+}
+
+# SNS Topic for Errors
+resource "aws_sns_topic" "sns_topic" {
+  name = "${local.name}-sns_topic"
+}
+
+resource "aws_sns_topic_policy" "notify_policy" {
+  arn    = aws_sns_topic.sns_topic.arn
+  policy = data.aws_iam_policy_document.notify_policy.json
+}
+

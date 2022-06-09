@@ -23,3 +23,20 @@ data "aws_ami" "amzlinux2" {
     values = [ "x86_64" ]
   }
 }
+
+data "aws_iam_policy_document" "notify_policy" {
+  statement {
+    actions = [
+      "SNS:Publish",
+    ]
+
+    resources = [
+      "${aws_sns_topic.sns_topic.arn}",
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudwatch.amazonaws.com"]
+    }
+  }
+}

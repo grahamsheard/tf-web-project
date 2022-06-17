@@ -11,4 +11,4 @@ The following is optional and will get you bonus points:
 setup autoscaling
 do the above in ECS
 
-![](diagram.png)
+![](diagram.jpg)
